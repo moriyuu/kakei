@@ -1,0 +1,17 @@
+.container {
+	width: 220px;
+	padding: 15px 20px;
+	background: var(--background);
+	border: 1px solid var(--border);
+}
+
+.section {
+	margin-bottom: 12px;
+}
+
+.subhead {
+	font-weight: normal;
+	font-style: italic;
+	color: var(--text-sub);
+	margin-bottom: 4px;
+}
