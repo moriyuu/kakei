@@ -212,7 +212,14 @@ const Home: NextPage = () => {
                 <Icons.Gear size={28} />
               </button>
               {showSettingPalette && (
-                <div style={{ position: "absolute", right: 0, top: "36px" }}>
+                <div
+                  style={{
+                    position: "absolute",
+                    right: 0,
+                    top: "36px",
+                    zIndex: 1,
+                  }}
+                >
                   <SettingPalette
                     budget={budget}
                     onChangeBudget={updateBudgetSetting}
