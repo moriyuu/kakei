@@ -13,6 +13,7 @@ import { sum } from "../utils";
 import * as store from "../utils/store";
 import { Date, toDate, Items } from "../utils/types";
 import { isToday } from "../utils/day";
+import * as migration from "../utils/202207migration";
 
 const useBudget = () => {
   const [businessDayBudget, setBusinessDayBudget] = useState<number>(2000);
@@ -159,7 +160,7 @@ const Home: NextPage = () => {
       const d = store.load<{
         data: Record<Date, Items>;
         memo: string;
-      }>(month);
+      }>("monthData:" + month);
       if (d == null) {
         setData({});
         setMemo("");
@@ -178,7 +179,7 @@ const Home: NextPage = () => {
     if (!initialized) {
       return;
     }
-    store.save(month, { data, memo });
+    store.save("monthData:" + month, { data, memo });
   }, [initialized, month, data, memo]);
 
   return (
@@ -238,6 +239,8 @@ const Home: NextPage = () => {
             </div>
           </div>
         </div>
+
+        <button onClick={migration.exec}>MIGRATE</button>
 
         <div>surplus: {surplus}</div>
 
