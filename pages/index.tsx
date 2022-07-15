@@ -11,7 +11,7 @@ import { SettingPalette } from "../components/SettingPalette";
 import * as Icons from "../components/icons";
 import { sum } from "../utils";
 import * as store from "../utils/store";
-import { Date, Yen, toDate } from "../utils/types";
+import { Date, toDate, Items } from "../utils/types";
 import { isToday } from "../utils/day";
 
 const useBudget = () => {
@@ -79,7 +79,7 @@ const Home: NextPage = () => {
   const [month, setMonth] = useState(dayjs().format("YYYY-MM"));
   const [memo, setMemo] = useState("");
   const [editingDays, setEditingDays] = useState<Record<Date, boolean>>({});
-  const [data, setData] = useState<Record<Date, Yen[]>>({});
+  const [data, setData] = useState<Record<Date, Items>>({});
   const [showSettingPalette, setShowSettingPalette] = useState(false);
 
   //
@@ -94,7 +94,7 @@ const Home: NextPage = () => {
         .reduce((memo, date) => {
           const isHoliday =
             days.find((day) => day.date === date)?.isHoliday || false;
-          const dayTotal = sum(data[date]);
+          const dayTotal = sum(data[date].map((d) => d.yen));
           const diff = budget(isHoliday) - dayTotal;
           return memo + diff;
         }, 0),
@@ -111,9 +111,9 @@ const Home: NextPage = () => {
     [editingDays]
   );
   const saveEdit = useCallback(
-    (date: Date, yens: Yen[]) => {
+    (date: Date, items: Items) => {
       setEditingDays({ ...editingDays, [date]: false });
-      setData({ ...data, [date]: yens });
+      setData({ ...data, [date]: items });
     },
     [data, editingDays]
   );
@@ -128,12 +128,17 @@ const Home: NextPage = () => {
   }, []);
   const copyContentAsText = useCallback(() => {
     const content = days.reduce((memo, { date, isHoliday }) => {
-      const yens = data[date] || [];
-      if (yens.length > 0) {
+      const items = data[date] || [];
+      if (items.length > 0) {
+        const yens = items.map((item) => item.yen);
         const dayTotal = sum(yens);
         const diff = budget(isHoliday) - dayTotal;
         const diffStr = diff >= 0 ? `${diff}+` : `${-diff}-`;
-        const rowStr = `${date}. ${yens.join("+")} = ${dayTotal} (${diffStr})`;
+        const rowStr = `${date}. ${items
+          .map(
+            (item) => `${item.yen}${item.comment ? `(${item.comment})` : ""}`
+          )
+          .join("+")} = ${dayTotal} (${diffStr})`;
         return memo + rowStr + "\n";
       } else {
         const rowStr = `${date}. `;
@@ -151,7 +156,10 @@ const Home: NextPage = () => {
   // initialize data and memo (from store)
   useEffect(() => {
     try {
-      const d = store.load<{ data: Record<Date, Yen[]>; memo: string }>(month);
+      const d = store.load<{
+        data: Record<Date, Items>;
+        memo: string;
+      }>(month);
       if (d == null) {
         setData({});
         setMemo("");
@@ -235,7 +243,7 @@ const Home: NextPage = () => {
 
         <ol className={styles.list}>
           {days.map(({ date, isHoliday }) => {
-            const yens = data[date] || [];
+            const items = data[date] || [];
             const listItemStyle = [
               styles.listItem,
               isToday(month, date) && styles.listItemFocused,
@@ -247,8 +255,8 @@ const Home: NextPage = () => {
                 <li key={date} className={listItemStyle}>
                   <div style={{ marginLeft: "8px" }}>
                     <DayEditor
-                      yens={yens}
-                      saveEdit={(yens) => saveEdit(date, yens)}
+                      items={items}
+                      saveEdit={(items) => saveEdit(date, items)}
                       cancelEdit={() => cancelEdit(date)}
                     />
                   </div>
@@ -256,6 +264,7 @@ const Home: NextPage = () => {
               );
             }
 
+            const yens = items.map((item) => item.yen);
             const total = sum(yens);
             const diff = budget(isHoliday) - total;
             const diffStr = diff >= 0 ? `${diff}+` : `${-diff}-`;

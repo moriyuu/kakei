@@ -5,3 +5,6 @@ export const toYen = (yen: number): Yen => yen as Yen;
 export type Date = number & { __DateBrand: never };
 export const fromDate = (date: Date): number => date;
 export const toDate = (date: number): Date => date as Date;
+
+export type Item = { yen: Yen; comment: string | null };
+export type Items = Item[];
