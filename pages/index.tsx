@@ -12,6 +12,7 @@ import * as Icons from "../components/icons";
 import { sum } from "../utils";
 import * as store from "../utils/store";
 import { Date, Yen, toDate } from "../utils/types";
+import { isToday } from "../utils/day";
 
 const useBudget = () => {
   const [businessDayBudget, setBusinessDayBudget] = useState<number>(2000);
@@ -225,14 +226,18 @@ const Home: NextPage = () => {
 
         <div>surplus: {surplus}</div>
 
-        <ol>
+        <ol className={styles.list}>
           {days.map(({ date, isHoliday }) => {
             const yens = data[date] || [];
+            const listItemStyle = [
+              styles.listItem,
+              isToday(month, date) && styles.listItemFocused,
+            ].join(" ");
 
             const isEditing = editingDays[date];
             if (isEditing) {
               return (
-                <li key={date}>
+                <li key={date} className={listItemStyle}>
                   <div style={{ marginLeft: "8px" }}>
                     <DayEditor
                       yens={yens}
@@ -249,7 +254,7 @@ const Home: NextPage = () => {
             const diffStr = diff >= 0 ? `${diff}+` : `${-diff}-`;
             const rowStr = `${yens.join("+")} = ${total} (${diffStr})`;
             return (
-              <li key={date} style={{ height: 20 }}>
+              <li key={date} className={listItemStyle} style={{ height: 20 }}>
                 <div
                   onClick={() => startEdit(date)}
                   style={{ display: "inline-block", marginLeft: "8px" }}
