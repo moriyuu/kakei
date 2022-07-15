@@ -9,6 +9,9 @@
   list-style-type: none;
   position: relative;
 }
+.list .listItem {
+  margin-bottom: 1px;
+}
 .list .listItem::before {
   position: absolute;
   box-sizing: border-box;

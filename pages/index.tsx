@@ -254,7 +254,7 @@ const Home: NextPage = () => {
             const diffStr = diff >= 0 ? `${diff}+` : `${-diff}-`;
             const rowStr = `${yens.join("+")} = ${total} (${diffStr})`;
             return (
-              <li key={date} className={listItemStyle} style={{ height: 20 }}>
+              <li key={date} className={listItemStyle}>
                 <div
                   onClick={() => startEdit(date)}
                   style={{ display: "inline-block", marginLeft: "8px" }}
