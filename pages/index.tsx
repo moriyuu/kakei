@@ -13,7 +13,6 @@ import { sum } from "../utils";
 import * as store from "../utils/store";
 import { Date, toDate, Items } from "../utils/types";
 import { isToday } from "../utils/day";
-import * as migration from "../utils/202207migration";
 
 const useBudget = () => {
   const [businessDayBudget, setBusinessDayBudget] = useState<number>(2000);
@@ -239,8 +238,6 @@ const Home: NextPage = () => {
             </div>
           </div>
         </div>
-
-        <button onClick={migration.exec}>MIGRATE</button>
 
         <div>surplus: {surplus}</div>
 
