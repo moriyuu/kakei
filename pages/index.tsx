@@ -75,6 +75,7 @@ const Home: NextPage = () => {
   //
   // states
   //
+  const [isClient, setIsClient] = useState(false);
   const [initialized, setInitialized] = useState(false);
   const [month, setMonth] = useState(dayjs().format("YYYY-MM"));
   const [memo, setMemo] = useState("");
@@ -152,6 +153,10 @@ const Home: NextPage = () => {
   //
   // effects
   //
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   // initialize data and memo (from store)
   useEffect(() => {
@@ -246,7 +251,7 @@ const Home: NextPage = () => {
             const items = data[date] || [];
             const listItemStyle = [
               styles.listItem,
-              isToday(month, date) && styles.listItemFocused,
+              isClient && isToday(month, date) && styles.listItemFocused,
             ].join(" ");
 
             const isEditing = editingDays[date];
