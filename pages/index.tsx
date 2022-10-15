@@ -8,6 +8,7 @@ import copy from "copy-to-clipboard";
 import styles from "../styles/Home.module.css";
 import { DayEditor } from "../components/DayEditor";
 import { SettingPalette } from "../components/SettingPalette";
+import { Footer } from "../components/Footer";
 import * as Icons from "../components/icons";
 import { sum } from "../utils";
 import * as store from "../utils/store";
@@ -298,6 +299,8 @@ const Home: NextPage = () => {
           rows={Math.max(5, memo.split("\n").length)}
           style={{ width: "100%" }}
         ></textarea>
+
+        <Footer />
       </div>
     </>
   );
