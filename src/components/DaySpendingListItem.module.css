@@ -1,18 +1,7 @@
-.container {
-  max-width: 1180px;
-  margin: 0 auto;
-  padding: 0 2rem 40px 2rem;
-}
-
-.list {
-  counter-reset: num;
-  list-style-type: none;
-  position: relative;
-}
-.list .listItem {
+.listItem {
   margin-bottom: 1px;
 }
-.list .listItem::before {
+.listItem::before {
   position: absolute;
   box-sizing: border-box;
   font-variant-numeric: tabular-nums;
@@ -23,6 +12,6 @@
   min-width: 32px;
   text-align: right;
 }
-.list .listItemFocused::before {
+.listItemFocused::before {
   border-left: 3px solid; 
 }

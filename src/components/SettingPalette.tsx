@@ -1,28 +1,30 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import styles from "./SettingPalette.module.css";
 
 type Props = {
-  budget: (isHoliday: boolean) => number;
+  businessDayBudget: number;
+  holidayBudget: number;
   onChangeBudget: (businessDayBudget: number, holidayBudget: number) => void;
   copyContentAsText: () => void;
 };
 
 export const SettingPalette = ({
-  budget,
+  businessDayBudget: businessDayBudgetProp,
+  holidayBudget: holidayBudgetProp,
   onChangeBudget,
   copyContentAsText,
 }: Props) => {
   const [businessDayBudget, setBusinessDayBudget] = useState<number>(
-    budget(false)
+    businessDayBudgetProp
   );
-  const [holidayBudget, setHolidayBudget] = useState<number>(budget(true));
+  const [holidayBudget, setHolidayBudget] = useState<number>(holidayBudgetProp);
   const [copied, setCopied] = useState<boolean>(false);
 
-  const copyAsText = () => {
+  const copyAsText = useCallback(() => {
     copyContentAsText();
     setCopied(true);
     setTimeout(() => setCopied(false), 500);
-  };
+  }, [copyContentAsText]);
 
   useEffect(() => {
     onChangeBudget(businessDayBudget, holidayBudget);

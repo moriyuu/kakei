@@ -1,11 +1,11 @@
-import { Date, toDate, Yen, Items } from "./types";
+import { Date, toDate, Yen, SpendingItem } from "./types";
 import * as store from "./store";
 
-const migrate = (before: Record<Date, Yen[]>): Record<Date, Items> => {
-  const after: Record<Date, Items> = {};
+const migrate = (before: Record<Date, Yen[]>): Record<Date, SpendingItem[]> => {
+  const after: Record<Date, SpendingItem[]> = {};
   Object.keys(before).forEach((_date) => {
     const date = toDate(Number(_date));
-    const items: Items = before[date].map((yen) => ({
+    const items: SpendingItem[] = before[date].map((yen) => ({
       yen,
       comment: null,
     }));

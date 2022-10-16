@@ -1,10 +1,10 @@
 import React, { useState, useCallback } from "react";
-import { toYen, Items } from "../utils/types";
+import { toYen, SpendingItem } from "../utils/types";
 import { correctItemFormat } from "../utils/format";
 
 type Props = {
-  items: Items;
-  saveEdit: (items: Items) => void;
+  items: SpendingItem[];
+  saveEdit: (items: SpendingItem[]) => void;
   cancelEdit: () => void;
 };
 
@@ -23,7 +23,7 @@ export const DayEditor = ({ items, saveEdit, cancelEdit }: Props) => {
         return;
       }
 
-      const items: Items = value.split("+").map((item) => {
+      const items: SpendingItem[] = value.split("+").map((item) => {
         const trimed = item.trim();
         if (!correctItemFormat(trimed)) {
           throw new Error("correct item format: " + item);
