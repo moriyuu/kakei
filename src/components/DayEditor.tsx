@@ -1,17 +1,21 @@
 import React, { useState, useCallback } from "react";
-import { toYen, SpendingItem } from "../utils/types";
+import { SpendingItem, Day } from "../utils/types";
 import { correctItemFormat } from "../utils/format";
+import dayjs from "dayjs";
+
+const getId = () => "draft";
 
 type Props = {
+  day: Day;
   items: SpendingItem[];
   saveEdit: (items: SpendingItem[]) => void;
   cancelEdit: () => void;
 };
 
-export const DayEditor = ({ items, saveEdit, cancelEdit }: Props) => {
+export const DayEditor = ({ day, items, saveEdit, cancelEdit }: Props) => {
   const [value, setValue] = useState(
     items
-      .map(({ yen, comment }) => `${yen}${comment ? `(${comment})` : ""}`)
+      .map(({ amount, comment }) => `${amount}${comment ? `(${comment})` : ""}`)
       .join("+")
   );
   const [error, setError] = useState(false);
@@ -28,12 +32,17 @@ export const DayEditor = ({ items, saveEdit, cancelEdit }: Props) => {
         if (!correctItemFormat(trimed)) {
           throw new Error("correct item format: " + item);
         }
-        const yen = parseInt(trimed.match(/(\d+)/)?.[1] ?? "", 10);
-        if (isNaN(yen)) {
-          throw new Error("yen is NaN: " + item);
+        const amount = parseInt(trimed.match(/(\d+)/)?.[1] ?? "", 10);
+        if (isNaN(amount)) {
+          throw new Error("amount is NaN: " + item);
         }
-        const comment = trimed.match(/\((.*)\)/)?.[1] ?? null;
-        return { yen: toYen(yen), comment };
+        const comment = trimed.match(/\((.*)\)/)?.[1] ?? "";
+        return {
+          id: getId(),
+          amount,
+          comment,
+          spentAt: dayjs(day.datetime).toISOString(),
+        };
       });
       saveEdit(items);
     } catch (err) {
@@ -41,7 +50,7 @@ export const DayEditor = ({ items, saveEdit, cancelEdit }: Props) => {
       setError(true);
       setTimeout(() => setError(false), 500);
     }
-  }, [value, saveEdit]);
+  }, [value, saveEdit, day.datetime]);
 
   const onSubmit = useCallback(
     (e: React.FormEvent) => {

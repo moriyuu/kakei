@@ -17,7 +17,7 @@ type Props = {
 };
 
 export const DaySpendingListItem = ({
-  day: { date, isHoliday },
+  day,
   items,
   isClient,
   month,
@@ -30,24 +30,28 @@ export const DaySpendingListItem = ({
   const startEdit = useCallback(() => {
     setIsEditing(true);
   }, []);
-  const saveEdit = useCallback((items: SpendingItem[]) => {
-    setIsEditing(false);
-    updateDaySpending(items);
-  }, []);
+  const saveEdit = useCallback(
+    (items: SpendingItem[]) => {
+      setIsEditing(false);
+      updateDaySpending(items);
+    },
+    [updateDaySpending]
+  );
   const cancelEdit = useCallback(() => {
     setIsEditing(false);
   }, []);
 
   const listItemStyle = [
     styles.listItem,
-    isClient && isToday(month, date) && styles.listItemFocused,
+    isClient && isToday(month, day.date) && styles.listItemFocused,
   ].join(" ");
 
   if (isEditing) {
     return (
-      <li key={date} className={listItemStyle}>
+      <li key={day.date} className={listItemStyle}>
         <div style={{ marginLeft: "8px" }}>
           <DayEditor
+            day={day}
             items={items}
             saveEdit={saveEdit}
             cancelEdit={cancelEdit}
@@ -57,19 +61,19 @@ export const DaySpendingListItem = ({
     );
   }
 
-  const yens = items.map((item) => item.yen);
-  const total = sum(yens);
-  const budget = isHoliday ? holidayBudget : businessDayBudget;
+  const amounts = items.map((item) => item.amount);
+  const total = sum(amounts);
+  const budget = day.isHoliday ? holidayBudget : businessDayBudget;
   const diff = budget - total;
   const diffStr = diff >= 0 ? `${diff}+` : `${-diff}-`;
-  const rowStr = `${yens.join("+")} = ${total} (${diffStr})`;
+  const rowStr = `${amounts.join("+")} = ${total} (${diffStr})`;
   return (
-    <li key={date} className={listItemStyle}>
+    <li key={day.date} className={listItemStyle}>
       <div
         onClick={startEdit}
         style={{ display: "inline-block", marginLeft: "8px" }}
       >
-        {yens.length ? (
+        {amounts.length ? (
           rowStr
         ) : (
           <span style={{ color: "var(--text-sub)" }}>NO DATA</span>

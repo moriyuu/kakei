@@ -52,14 +52,14 @@ const Home: NextPage = () => {
     const content = days.reduce((memo, { date, isHoliday }) => {
       const items = daySpendings[date] || [];
       if (items.length > 0) {
-        const yens = items.map((item) => item.yen);
-        const dayTotal = sum(yens);
+        const amounts = items.map((item) => item.amount);
+        const dayTotal = sum(amounts);
         const budget = isHoliday ? holidayBudget : businessDayBudget;
         const diff = budget - dayTotal;
         const diffStr = diff >= 0 ? `${diff}+` : `${-diff}-`;
         const rowStr = `${date}. ${items
           .map(
-            (item) => `${item.yen}${item.comment ? `(${item.comment})` : ""}`
+            (item) => `${item.amount}${item.comment ? `(${item.comment})` : ""}`
           )
           .join("+")} = ${dayTotal} (${diffStr})`;
         return memo + rowStr + "\n";
