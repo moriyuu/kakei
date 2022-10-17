@@ -23,7 +23,7 @@ export const useSurplus = ({
         .reduce((memo, date) => {
           const isHoliday =
             days.find((day) => day.date === date)?.isHoliday || false;
-          const dayTotal = sum(daySpendings[date].map((d) => d.yen));
+          const dayTotal = sum(daySpendings[date].map((d) => d.amount));
           const budget = isHoliday ? holidayBudget : businessDayBudget;
           const diff = budget - dayTotal;
           return memo + diff;
