@@ -13,6 +13,7 @@ type Props = {
     holidayBudget: number
   ) => void;
   copyContentAsText: () => void;
+  copyContentAsCsv: () => void;
 };
 
 export const Header = ({
@@ -22,6 +23,7 @@ export const Header = ({
   holidayBudget,
   updateBudgetSetting,
   copyContentAsText,
+  copyContentAsCsv,
 }: Props) => {
   const [showSettingPalette, setShowSettingPalette] = useState(false);
 
@@ -63,6 +65,7 @@ export const Header = ({
                 holidayBudget={holidayBudget}
                 onChangeBudget={updateBudgetSetting}
                 copyContentAsText={copyContentAsText}
+                copyContentAsCsv={copyContentAsCsv}
               />
             </div>
           )}

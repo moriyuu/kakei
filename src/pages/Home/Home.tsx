@@ -75,6 +75,30 @@ const Home: NextPage = () => {
     copy(content + surplusText);
   }, [days, daySpendings, businessDayBudget, holidayBudget, surplus]);
 
+  const copyContentAsCsv = useCallback(() => {
+    const rows = days
+      .map(({ date }) => {
+        const items = daySpendings[date] || [];
+        return items.map((item, i) => {
+          const y = parseInt(month.split("-")[0]);
+          const m = parseInt(month.split("-")[1]);
+          const row: [string, number, string, string, number] = [
+            "",
+            item.yen,
+            item.comment ?? "",
+            dayjs().year(y).month(m).date(date).toISOString(),
+            i + 1,
+          ];
+          return row;
+        });
+      })
+      .flat();
+    const csv = rows
+      .map((row) => row.map((v) => (v ? `"${v}"` : v)).join(","))
+      .join("\n");
+    copy(csv);
+  }, [days, daySpendings, month]);
+
   //
   // effects
   //
@@ -103,6 +127,7 @@ const Home: NextPage = () => {
           holidayBudget={holidayBudget}
           updateBudgetSetting={updateBudgetSetting}
           copyContentAsText={copyContentAsText}
+          copyContentAsCsv={copyContentAsCsv}
         />
 
         {initialized ? (

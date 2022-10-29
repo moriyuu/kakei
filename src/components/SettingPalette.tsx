@@ -6,6 +6,7 @@ type Props = {
   holidayBudget: number;
   onChangeBudget: (businessDayBudget: number, holidayBudget: number) => void;
   copyContentAsText: () => void;
+  copyContentAsCsv: () => void;
 };
 
 export const SettingPalette = ({
@@ -13,18 +14,25 @@ export const SettingPalette = ({
   holidayBudget: holidayBudgetProp,
   onChangeBudget,
   copyContentAsText,
+  copyContentAsCsv,
 }: Props) => {
   const [businessDayBudget, setBusinessDayBudget] = useState<number>(
     businessDayBudgetProp
   );
   const [holidayBudget, setHolidayBudget] = useState<number>(holidayBudgetProp);
-  const [copied, setCopied] = useState<boolean>(false);
+  const [copied, setCopied] = useState<"text" | "csv" | null>(null);
 
   const copyAsText = useCallback(() => {
     copyContentAsText();
-    setCopied(true);
-    setTimeout(() => setCopied(false), 500);
+    setCopied("text");
+    setTimeout(() => setCopied(null), 500);
   }, [copyContentAsText]);
+
+  const copyAsCsv = useCallback(() => {
+    copyContentAsCsv();
+    setCopied("csv");
+    setTimeout(() => setCopied(null), 500);
+  }, [copyContentAsCsv]);
 
   useEffect(() => {
     onChangeBudget(businessDayBudget, holidayBudget);
@@ -61,7 +69,11 @@ export const SettingPalette = ({
       <div className={styles.section}>
         <div className={styles.subhead}>export</div>
         <button onClick={copyAsText}>
-          {copied ? "copied!" : "copy as text"}
+          {copied === "text" ? "copied!" : "copy as text"}
+        </button>
+        <br />
+        <button onClick={copyAsCsv}>
+          {copied === "csv" ? "copied!" : "copy as csv"}
         </button>
       </div>
     </div>
