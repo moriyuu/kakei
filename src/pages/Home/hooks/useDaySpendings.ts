@@ -2,7 +2,6 @@ import { useMemo } from "react";
 import useSWR from "swr";
 import dayjs from "dayjs";
 
-import client from "../../../lib/microcms";
 import { Date, Month, SpendingItem, toDate } from "../../../utils/types";
 
 type Params = {
@@ -10,51 +9,19 @@ type Params = {
 };
 
 type Hook = {
-  initialized: boolean;
+  isLoading: boolean;
   daySpendings: Record<Date, SpendingItem[]>;
-  updateDaySpendingByDate: (date: Date, items: SpendingItem[]) => Promise<void>;
-};
-
-const fetcher = ({
-  endpoint,
-  greaterThan,
-  lessThan,
-}: {
-  endpoint: string;
-  greaterThan: string;
-  lessThan: string;
-}) =>
-  client
-    .get({
-      endpoint,
-      queries: {
-        limit: 9999,
-        filters: `spentAt[greater_than]${greaterThan}[and]spentAt[less_than]${lessThan}`,
-      },
-    })
-    .then((res) => res.contents);
-
-const useSpendingItems = ({ month }: Params) => {
-  const greaterThan = dayjs(month).toISOString();
-  const lessThan = dayjs(month).add(1, "month").toISOString();
-  const { data, error } = useSWR<SpendingItem[]>(
-    { endpoint: "spending-items", greaterThan, lessThan },
-    fetcher
-  );
-
-  return {
-    spendingItems: data,
-    isLoading: !error && !data,
-    error,
-  };
 };
 
 export const useDaySpendings = ({ month }: Params): Hook => {
-  const updateDaySpendingByDate = async (date: Date, items: SpendingItem[]) => {
-    // TODO: delete and post to microCMS
-  };
+  const greaterThan = dayjs(month).toISOString();
+  const lessThan = dayjs(month).add(1, "month").toISOString();
+  const { data, error } = useSWR<{ spendingItems: SpendingItem[] }>({
+    url: "/spending-items",
+    params: { greaterThan, lessThan },
+  });
+  const spendingItems = data?.spendingItems;
 
-  const { spendingItems, isLoading } = useSpendingItems({ month });
   const daySpendings = useMemo(
     () =>
       (spendingItems ?? []).reduce<Record<Date, SpendingItem[]>>(
@@ -73,8 +40,7 @@ export const useDaySpendings = ({ month }: Params): Hook => {
   );
 
   return {
-    initialized: !isLoading,
+    isLoading: !error && !data,
     daySpendings,
-    updateDaySpendingByDate,
   };
 };

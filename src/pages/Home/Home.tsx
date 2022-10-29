@@ -15,6 +15,7 @@ import { useBudget } from "./hooks/useBudget";
 import { useDaySpendings } from "./hooks/useDaySpendings";
 import { DaySpendingListItem } from "../../components/DaySpendingListItem";
 import { getDaysOfMonth } from "../../utils/day";
+import { useReplaceSpendingItems } from "./hooks/useReplaceSpendingItems";
 
 const Home: NextPage = () => {
   //
@@ -32,14 +33,15 @@ const Home: NextPage = () => {
   // hooks
   //
   const { businessDayBudget, holidayBudget, updateBudgetSetting } = useBudget();
-  const { initialized, daySpendings, updateDaySpendingByDate } =
-    useDaySpendings({ month });
+  const { isLoading, daySpendings } = useDaySpendings({ month });
   const surplus = useSurplus({
     daySpendings,
     days,
     businessDayBudget,
     holidayBudget,
   });
+
+  const replaceSpendingItemsOfDay = useReplaceSpendingItems();
 
   //
   // callbacks
@@ -82,11 +84,11 @@ const Home: NextPage = () => {
 
   // save daySpendings data to store
   useEffect(() => {
-    if (!initialized) {
+    if (isLoading) {
       return;
     }
     store.save("monthData:" + month, { data: daySpendings });
-  }, [initialized, month, daySpendings]);
+  }, [isLoading, month, daySpendings]);
 
   return (
     <>
@@ -102,7 +104,7 @@ const Home: NextPage = () => {
           copyContentAsText={copyContentAsText}
         />
 
-        {initialized ? (
+        {!isLoading ? (
           <>
             <div>surplus: {surplus}</div>
             <ol className={styles.list}>
@@ -118,7 +120,7 @@ const Home: NextPage = () => {
                     businessDayBudget={businessDayBudget}
                     holidayBudget={holidayBudget}
                     updateDaySpending={(items) =>
-                      updateDaySpendingByDate(day.date, items)
+                      updateDaySpendingByDate(day, items)
                     }
                   />
                 );
