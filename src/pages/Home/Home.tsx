@@ -81,7 +81,7 @@ const Home: NextPage = () => {
         const items = daySpendings[date] || [];
         return items.map((item, i) => {
           const y = parseInt(month.split("-")[0]);
-          const m = parseInt(month.split("-")[1]);
+          const m = parseInt(month.split("-")[1]) - 1;
           const row: [string, number, string, string, number] = [
             "",
             item.yen,
