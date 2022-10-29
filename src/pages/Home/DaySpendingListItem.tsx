@@ -1,19 +1,25 @@
 import { useCallback, useState } from "react";
 
 import styles from "./DaySpendingListItem.module.css";
-import { isToday } from "../utils/day";
-import { DayEditor } from "./DayEditor";
-import { sum } from "../utils";
-import { SpendingItem, Day, Month } from "../utils/types";
+import { isToday } from "../../utils/day";
+import { DayEditor } from "../../components/DayEditor";
+import { sum } from "../../utils";
+import {
+  Day,
+  Month,
+  SavedSpendingItem,
+  UnsavedSpendingItem,
+} from "../../utils/types";
+import { useReplaceSpendingItems } from "./hooks/useReplaceSpendingItems";
+import { Loading } from "../../components/Loading";
 
 type Props = {
   day: Day;
-  items: SpendingItem[];
+  items: SavedSpendingItem[];
   isClient: boolean;
   month: Month;
   businessDayBudget: number;
   holidayBudget: number;
-  updateDaySpending: (items: SpendingItem[]) => void;
 };
 
 export const DaySpendingListItem = ({
@@ -23,19 +29,21 @@ export const DaySpendingListItem = ({
   month,
   businessDayBudget,
   holidayBudget,
-  updateDaySpending,
 }: Props) => {
+  const { replaceSpendingItemsOfDay, status, error } =
+    useReplaceSpendingItems();
+
   const [isEditing, setIsEditing] = useState(false);
 
   const startEdit = useCallback(() => {
     setIsEditing(true);
   }, []);
   const saveEdit = useCallback(
-    (items: SpendingItem[]) => {
+    (items: UnsavedSpendingItem[]) => {
       setIsEditing(false);
-      updateDaySpending(items);
+      replaceSpendingItemsOfDay(day, items);
     },
-    [updateDaySpending]
+    [replaceSpendingItemsOfDay, day]
   );
   const cancelEdit = useCallback(() => {
     setIsEditing(false);
@@ -71,12 +79,26 @@ export const DaySpendingListItem = ({
     <li key={day.date} className={listItemStyle}>
       <div
         onClick={startEdit}
-        style={{ display: "inline-block", marginLeft: "8px" }}
+        style={{
+          marginLeft: "8px",
+          color: status === "loading" ? "var(--text-sub)" : "inherit",
+        }}
       >
         {amounts.length ? (
-          rowStr
+          <span>{rowStr}</span>
         ) : (
           <span style={{ color: "var(--text-sub)" }}>NO DATA</span>
+        )}
+        {status === "loading" && (
+          <span style={{ marginLeft: "5px" }}>
+            <Loading />
+          </span>
+        )}
+
+        {error && (
+          <div style={{ fontFamily: "monospace", color: "var(--text-error)" }}>
+            error: {error.message}
+          </div>
         )}
       </div>
     </li>

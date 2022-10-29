@@ -9,3 +9,9 @@
   list-style-type: none;
   position: relative;
 }
+
+.lastUpdate {
+  color: var(--text-sub);
+  font-style: italic;
+  font-size: 14px;
+}

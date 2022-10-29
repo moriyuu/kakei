@@ -6,20 +6,18 @@ import copy from "copy-to-clipboard";
 import styles from "./Home.module.css";
 import { Footer } from "../../components/Footer";
 import { sum } from "../../utils";
-import * as store from "../../utils/store";
 import { Month, toMonth } from "../../utils/types";
 import { Head } from "./Head";
 import { Header } from "./Header";
+import { DaySpendingListItem } from "./DaySpendingListItem";
 import { useSurplus } from "./hooks/useSurplus";
 import { useBudget } from "./hooks/useBudget";
 import { useDaySpendings } from "./hooks/useDaySpendings";
-import { DaySpendingListItem } from "../../components/DaySpendingListItem";
 import { getDaysOfMonth } from "../../utils/day";
-// import { trpc } from "../../lib/trpc";
+import { useSpendingItems } from "./hooks/useSpendingItems";
+import { useLastUpdate } from "./hooks/useLastUpdate";
 
 const Home: NextPage = () => {
-  // const { data } = trpc.hello.useQuery({ name: "moriyuu" });
-
   //
   // states
   //
@@ -35,14 +33,15 @@ const Home: NextPage = () => {
   // hooks
   //
   const { businessDayBudget, holidayBudget, updateBudgetSetting } = useBudget();
-  const { initialized, daySpendings, updateDaySpendingByDate } =
-    useDaySpendings({ month });
+  const { spendingItems, isLoading } = useSpendingItems({ month });
+  const daySpendings = useDaySpendings({ spendingItems: spendingItems ?? [] });
   const surplus = useSurplus({
     daySpendings,
     days,
     businessDayBudget,
     holidayBudget,
   });
+  const lastUpdate = useLastUpdate({ spendingItems: spendingItems ?? [] });
 
   //
   // callbacks
@@ -83,14 +82,6 @@ const Home: NextPage = () => {
     setIsClient(true);
   }, []);
 
-  // save daySpendings data to store
-  useEffect(() => {
-    if (!initialized) {
-      return;
-    }
-    store.save("monthData:" + month, { data: daySpendings });
-  }, [initialized, month, daySpendings]);
-
   return (
     <>
       <Head />
@@ -105,7 +96,7 @@ const Home: NextPage = () => {
           copyContentAsText={copyContentAsText}
         />
 
-        {initialized ? (
+        {!isLoading ? (
           <>
             <div>surplus: {surplus}</div>
             <ol className={styles.list}>
@@ -120,9 +111,6 @@ const Home: NextPage = () => {
                     month={month}
                     businessDayBudget={businessDayBudget}
                     holidayBudget={holidayBudget}
-                    updateDaySpending={(items) =>
-                      updateDaySpendingByDate(day.date, items)
-                    }
                   />
                 );
               })}
@@ -130,6 +118,10 @@ const Home: NextPage = () => {
           </>
         ) : (
           <div>loading...</div>
+        )}
+
+        {lastUpdate && (
+          <div className={styles.lastUpdate}>last update: {lastUpdate}</div>
         )}
 
         <Footer />

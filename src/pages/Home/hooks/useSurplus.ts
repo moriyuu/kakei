@@ -1,9 +1,9 @@
 import { useMemo } from "react";
 import { sum } from "../../../utils";
-import { Date, toDate, SpendingItem, Day } from "../../../utils/types";
+import { Date, toDate, SavedSpendingItem, Day } from "../../../utils/types";
 
 type Params = {
-  daySpendings: Record<Date, SpendingItem[]>;
+  daySpendings: Record<Date, SavedSpendingItem[]>;
   days: Day[];
   businessDayBudget: number;
   holidayBudget: number;

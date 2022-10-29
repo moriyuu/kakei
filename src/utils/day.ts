@@ -1,6 +1,9 @@
 import dayjs from "dayjs";
+import isTodayPlugin from "dayjs/plugin/isToday";
 import * as holiday_jp from "@holiday-jp/holiday_jp";
 import { Date, Month, Day, toDate } from "./types";
+
+dayjs.extend(isTodayPlugin);
 
 /**
  * @param month YYYY-MM

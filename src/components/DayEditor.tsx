@@ -1,14 +1,12 @@
 import React, { useState, useCallback } from "react";
-import { SpendingItem, Day } from "../utils/types";
+import { SavedSpendingItem, Day, UnsavedSpendingItem } from "../utils/types";
 import { correctItemFormat } from "../utils/format";
 import dayjs from "dayjs";
 
-const getId = () => "draft";
-
 type Props = {
   day: Day;
-  items: SpendingItem[];
-  saveEdit: (items: SpendingItem[]) => void;
+  items: SavedSpendingItem[];
+  saveEdit: (items: UnsavedSpendingItem[]) => void;
   cancelEdit: () => void;
 };
 
@@ -27,23 +25,25 @@ export const DayEditor = ({ day, items, saveEdit, cancelEdit }: Props) => {
         return;
       }
 
-      const items: SpendingItem[] = value.split("+").map((item) => {
-        const trimed = item.trim();
-        if (!correctItemFormat(trimed)) {
-          throw new Error("correct item format: " + item);
-        }
-        const amount = parseInt(trimed.match(/(\d+)/)?.[1] ?? "", 10);
-        if (isNaN(amount)) {
-          throw new Error("amount is NaN: " + item);
-        }
-        const comment = trimed.match(/\((.*)\)/)?.[1] ?? "";
-        return {
-          id: getId(),
-          amount,
-          comment,
-          spentAt: dayjs(day.datetime).toISOString(),
-        };
-      });
+      const items: UnsavedSpendingItem[] = value
+        .split("+")
+        .map((item, index) => {
+          const trimed = item.trim();
+          if (!correctItemFormat(trimed)) {
+            throw new Error("correct item format: " + item);
+          }
+          const amount = parseInt(trimed.match(/(\d+)/)?.[1] ?? "", 10);
+          if (isNaN(amount)) {
+            throw new Error("amount is NaN: " + item);
+          }
+          const comment = trimed.match(/\((.*)\)/)?.[1] ?? "";
+          return {
+            amount,
+            comment,
+            spentAt: dayjs(day.datetime).toISOString(),
+            order: index + 1,
+          };
+        });
       saveEdit(items);
     } catch (err) {
       console.error(err);
@@ -84,7 +84,10 @@ export const DayEditor = ({ day, items, saveEdit, cancelEdit }: Props) => {
           >
             cancel
           </button>
-          <button type="submit" style={{ color: error ? "red" : "#000" }}>
+          <button
+            type="submit"
+            style={{ color: error ? "var(--text-error)" : "#000" }}
+          >
             {error ? "error!" : "save"}
           </button>
         </div>
