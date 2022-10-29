@@ -1,56 +1,26 @@
-import { useState, useEffect, useCallback } from "react";
-import { Date, Month, SpendingItem } from "../../../utils/types";
-import * as store from "../../../utils/store";
+import { useMemo } from "react";
+import dayjs from "dayjs";
+
+import { Date, SavedSpendingItem, toDate } from "../../../utils/types";
 
 type Params = {
-  month: Month;
+  spendingItems: SavedSpendingItem[];
 };
 
-type Hook = {
-  initialized: boolean;
-  daySpendings: Record<Date, SpendingItem[]>;
-  updateDaySpendingByDate: (date: Date, items: SpendingItem[]) => void;
-};
-
-export const useDaySpendings = ({ month }: Params): Hook => {
-  const [initialized, setInitialized] = useState(false);
-  const [daySpendings, setDaySpendings] = useState<
-    Record<Date, SpendingItem[]>
-  >({});
-
-  const replaceDaySpendings = useCallback((d: Record<Date, SpendingItem[]>) => {
-    setDaySpendings(d);
-  }, []);
-
-  const updateDaySpendingByDate = useCallback(
-    (date: Date, items: SpendingItem[]) => {
-      setDaySpendings((state) => ({ ...state, [date]: items }));
-    },
-    []
+export const useDaySpendings = ({ spendingItems }: Params) => {
+  return useMemo(
+    () =>
+      (spendingItems ?? [])
+        .sort((a, b) => a.order - b.order)
+        .reduce<Record<Date, SavedSpendingItem[]>>((memo, spendingItem) => {
+          const date = toDate(dayjs(spendingItem.spentAt).get("date"));
+          if (!memo[date]) {
+            memo[date] = [spendingItem];
+          } else {
+            memo[date] = [...memo[date], spendingItem];
+          }
+          return memo;
+        }, {}),
+    [spendingItems]
   );
-
-  // initialize daySpendings data (from store)
-  useEffect(() => {
-    try {
-      setInitialized(false);
-      const d = store.load<{
-        data: Record<Date, SpendingItem[]>;
-        memo: string;
-      }>("monthData:" + month);
-      if (d == null) {
-        replaceDaySpendings({});
-      } else {
-        replaceDaySpendings(d.data);
-      }
-      setInitialized(true);
-    } catch (err) {
-      window.alert("failed to load data. Error=" + (err as Error).toString());
-    }
-  }, [month, replaceDaySpendings]);
-
-  return {
-    initialized,
-    daySpendings,
-    updateDaySpendingByDate,
-  };
 };

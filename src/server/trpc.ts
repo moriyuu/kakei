@@ -7,8 +7,8 @@ const logger = t.middleware(async ({ path, type, next }) => {
   const result = await next();
   const durationMs = Date.now() - start;
   result.ok
-    ? console.log("OK", { path, type, durationMs })
-    : console.log("NG", { path, type, durationMs });
+    ? console.log("[trpc] OK", { path, type, durationMs })
+    : console.error("[trpc] NG", { path, type, durationMs });
 
   return result;
 });

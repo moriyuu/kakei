@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import * as store from "../../../utils/store";
+import * as store from "../../../utils/localStorage";
 
 type Hook = {
   businessDayBudget: number;

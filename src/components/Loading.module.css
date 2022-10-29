@@ -1,0 +1,27 @@
+
+.dot {
+  opacity: 0;
+  animation: flash 4000ms steps(2, jump-none) infinite;
+}
+
+.d1 {
+  animation-delay: 0ms;
+}
+.d2 {
+  animation-delay: 500ms;
+}
+.d3 {
+  animation-delay: 1000ms;
+}
+.d4 {
+  animation-delay: 1500ms;
+}
+
+@keyframes flash {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}

@@ -3,6 +3,7 @@
     --background: #202124;
     --text-main: #e8eaed;
     --text-sub: #777;
+    --text-error: #df5452;
     --border: #5f6368;
     --button: #f7f7f7;
   }
@@ -12,6 +13,7 @@
     --background: #fff;
     --text-main: #202124;
     --text-sub: #ccc;
+    --text-error: #d44c47;
     --border: #e0e0e0;
     --button: #f7f7f7;
   }
