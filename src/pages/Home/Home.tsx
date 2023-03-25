@@ -15,11 +15,8 @@ import { useBudget } from "./hooks/useBudget";
 import { useDaySpendings } from "./hooks/useDaySpendings";
 import { DaySpendingListItem } from "../../components/DaySpendingListItem";
 import { getDaysOfMonth } from "../../utils/day";
-// import { trpc } from "../../lib/trpc";
 
 const Home: NextPage = () => {
-  // const { data } = trpc.hello.useQuery({ name: "moriyuu" });
-
   //
   // states
   //
