@@ -151,7 +151,7 @@ const Home: NextPage = () => {
             </ol>
           </>
         ) : (
-          <div>loading....</div>
+          <div>loading.....</div>
         )}
 
         <Footer />
