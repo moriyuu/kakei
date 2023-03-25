@@ -1,0 +1,31 @@
+{
+  "name": "web",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@holiday-jp/holiday_jp": "^2.4.0",
+    "copy-to-clipboard": "^3.3.3",
+    "dayjs": "^1.11.7",
+    "next": "^13.1.1",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "ui": "workspace:*"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.0.0",
+    "@types/node": "^17.0.12",
+    "@types/react": "^18.0.22",
+    "@types/react-dom": "^18.0.7",
+    "eslint": "7.32.0",
+    "eslint-config-custom": "workspace:*",
+    "tsconfig": "workspace:*",
+    "typescript": "^4.5.3"
+  }
+}
