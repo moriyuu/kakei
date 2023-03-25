@@ -6,7 +6,7 @@ import copy from "copy-to-clipboard";
 import styles from "./Home.module.css";
 import { Footer } from "../../components/Footer";
 import { sum } from "../../utils";
-import * as store from "../../utils/store";
+import store from "../../utils/store";
 import { Month, toMonth } from "../../utils/types";
 import { Head } from "./Head";
 import { Header } from "./Header";
@@ -15,10 +15,11 @@ import { useBudget } from "./hooks/useBudget";
 import { useDaySpendings } from "./hooks/useDaySpendings";
 import { DaySpendingListItem } from "../../components/DaySpendingListItem";
 import { getDaysOfMonth } from "../../utils/day";
-// import { trpc } from "../../lib/trpc";
+import { trpc } from "../../lib/trpc";
 
 const Home: NextPage = () => {
-  // const { data } = trpc.hello.useQuery({ name: "moriyuu" });
+  const res = trpc.hello.useQuery({ name: "moriyuu" });
+  console.log("data :>> ", res.data);
 
   //
   // states
@@ -112,7 +113,7 @@ const Home: NextPage = () => {
     if (!initialized) {
       return;
     }
-    store.save("monthData:" + month, { data: daySpendings });
+    store?.save("monthData:" + month, { data: daySpendings });
   }, [initialized, month, daySpendings]);
 
   return (

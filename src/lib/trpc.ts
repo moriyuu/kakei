@@ -1,6 +1,7 @@
 import { httpBatchLink } from "@trpc/client";
 import { createTRPCNext } from "@trpc/next";
 import type { AppRouter } from "../server/routers/_app";
+import * as firebase from "./firebase";
 
 function getBaseUrl() {
   if (typeof window !== "undefined") {
@@ -18,9 +19,15 @@ export const trpc = createTRPCNext<AppRouter>({
       links: [
         httpBatchLink({
           url: `${getBaseUrl()}/api/trpc`,
+          headers: async () => {
+            const idToken = await firebase.getIdToken();
+            return {
+              Authorization: `Bearer ${idToken}`,
+            };
+          },
         }),
       ],
     };
   },
-  ssr: true,
+  ssr: false,
 });

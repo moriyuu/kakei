@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { Date, Month, SpendingItem } from "../../../utils/types";
-import * as store from "../../../utils/store";
+import store from "../../../utils/store";
 
 type Params = {
   month: Month;
@@ -33,7 +33,7 @@ export const useDaySpendings = ({ month }: Params): Hook => {
   useEffect(() => {
     try {
       setInitialized(false);
-      const d = store.load<{
+      const d = store?.load<{
         data: Record<Date, SpendingItem[]>;
         memo: string;
       }>("monthData:" + month);

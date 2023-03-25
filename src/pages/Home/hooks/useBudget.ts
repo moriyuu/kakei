@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import * as store from "../../../utils/store";
+import store from "../../../utils/store";
 
 type Hook = {
   businessDayBudget: number;
@@ -18,14 +18,14 @@ export const useBudget = (): Hook => {
     (businessDayBudget: number, holidayBudget: number) => {
       setBusinessDayBudget(businessDayBudget);
       setHolidayBudget(holidayBudget);
-      store.save("budget", { businessDayBudget, holidayBudget });
+      store?.save("budget", { businessDayBudget, holidayBudget });
     },
     []
   );
 
   useEffect(() => {
     try {
-      const d = store.load<{
+      const d = store?.load<{
         businessDayBudget: number;
         holidayBudget: number;
       }>("budget");

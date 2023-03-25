@@ -1,5 +1,5 @@
 import { Date, toDate, Yen, SpendingItem } from "./types";
-import * as store from "./store";
+import store from "./store";
 
 const migrate = (before: Record<Date, Yen[]>): Record<Date, SpendingItem[]> => {
   const after: Record<Date, SpendingItem[]> = {};
@@ -19,7 +19,7 @@ export const exec = () => {
     return;
   }
 
-  const d = store.load<{
+  const d = store?.load<{
     data: Record<Date, Yen[]>;
     memo: string;
   }>("2022-07");
@@ -29,6 +29,6 @@ export const exec = () => {
   }
 
   const after = migrate(d.data);
-  store.save("monthData:2022-07", { data: after, memo: d.memo });
+  store?.save("monthData:2022-07", { data: after, memo: d.memo });
   window.alert("ok!");
 };
