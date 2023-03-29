@@ -2,3 +2,8 @@ name="kakei-api"
 main="src/index.ts"
 
 compatibility_date = "2022-11-22"
+
+[[ d1_databases ]]
+binding = "DB"
+database_name = "kakei-db"
+database_id = "1271e9c6-02b1-474a-8b6b-4c688956e892"
